@@ -1,0 +1,556 @@
+This File in particular explains in detail about how our program operates as per the guidelines with one client or even multiple clients. It also explains in detail how we tested our code to be fully functional according to the guidelines of the assignment. 
+
+--> What is the purpose of the assignment?
+	
+	-To implement our own version of git which is a a popular current iteration of a series of version control systems. To build a server and a client to maintain all the necessary changes form server to client and vice versa.
+
+All the testcases written below are tested on the ilab machine named "ls.cs.rutgers.edu" with IP address = 128.6.13.171 and Port number = 17000.
+
+/////
+Below the Testcase the change in ".manifest" file is shown.
+\\\\\
+
+Test Cases:
+
+	- Following are the different command line interfaces we tested for the files named file1.txt, files2.txt and file3.txt in the project named TESTCASE. The required files will be created when you run "make test" and then run the executable named "WTFtest". 
+	-The output of following testcase are according to the guidelines as mentioned in the assignment.
+
+--> Test-Case 0, configure:   //Activating the server and configuring it with client.
+-INPUT :- 
+	Server Side:
+		- ./WTFserver 17000
+
+	Client Side -
+		- ./WTF configure ls.cs.rutgers.edu 17000
+		or
+		- ./WTF 128.6.13.171 17000
+		or
+		- ./WTF hostname 17000
+
+-OUTPUT :-
+	Server Side:
+		-Listening
+		After accepting:
+		Starting Client Thread
+		Terminating Client connection
+	
+	Client Side -
+		-Done.
+
+--> Test-Case 1:  //creating a project named TESTCASE
+-INPUT :- 
+	Client Side -
+		- ./WTF create TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: create
+		Creating project: TESTCASE.
+		Writing File .manifest in project: TESTCASE to client.
+		Terminating Client connection
+
+	Client Side -
+		-Trying to create Project: TESTCASE.
+		Done.
+
+--> Test-Case 2:  //Adding the file named 'file1.txt' to the project TESTCASE. Similarly add file2.txt and file3.txt.
+-INPUT :- 
+	Client Side -
+		- ./WTF add TESTCASE file1.txt
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Terminating Client connection
+
+	Client Side -
+		-File added to manifest.
+
+--> Test-Case 3:  //Committing the project.
+-INPUT :- 
+	Client Side -
+		- ./WTF commit TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: commit
+		Writing File .manifest in project: TESTCASE to client.
+		Client issued command: commitfile
+		Terminating Client connection
+
+	Client Side -
+		-Trying to commit project: TESTCASE
+		.commit pushed to server successfully.
+		Done.
+
+--> Test-Case 4:  //Pushing the project to the server.
+-INPUT :- 
+	Client Side -
+		- ./WTF push TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: pushfiles
+		Writing File .manifest in project: TESTCASE to client.
+		Terminating Client connection
+
+	Client Side -
+		-Trying to push project: TESTCASE
+		Done.
+
+--> Test-Case 5:  //Getting current version of project from .version
+-INPUT :- 
+	Client Side -
+		- ./WTF currentversion TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: currentversion
+		Writing File .manifest in project: TESTCASE to client.
+		Terminating Client connection
+
+	Client Side -
+		-Trying to get current version of Project: TESTCASE.
+		Project: TESTCASE
+		Project Version: 3
+		Project Files:
+			Version: 1, File: file1.txt
+			Version: 1, File: file2.txt
+			Version: 1, File: file3.txt
+
+--> Test-Case 6:  //Getting all history of project from .history
+-INPUT :- 
+	Client Side -
+		- ./WTF history TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: history
+		Terminating Client connection
+
+	Client Side -
+		-Project created: TESTCASE
+
+		push
+		1
+		A 1 3b3f43463398ff134cd1eba31bdd8fe9 file1.txt
+		A 1 99398e86399f7bfc04b44ccdb4e709de file2.txt
+		A 1 f4c1b1a8921a0f56fe05e8368237fc42 file3.txt
+
+		Done.
+
+--> Test-Case 7:  //Check to see if project needs to be updated.
+-INPUT :- 
+	Client Side -
+		- ./WTF update TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: update
+		Writing File .manifest in project: TESTCASE to client.
+		Terminating Client connection
+
+	Client Side -
+		-Trying to create .update files: TESTCASE
+		Comparing manifests.
+		Project Up-To-Date
+		Done.
+
+--> Test-Case 8: //Check to see if project needs to be updated and if yes then upgrades it.
+-INPUT :- 
+	Client Side -
+		- ./WTF upgrade TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: upgrade
+		Writing File .manifest in project: TESTCASE to client.
+		Terminating Client connection
+
+	Client Side -
+		-Trying to upgrade project: TESTCASE
+		Project Up-to-date.
+		Done.
+
+--> Test-Case 9-a:  //Checkout command when project is already present in Client.
+-INPUT :- 
+	Client Side -
+		- ./WTF checkout TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Terminating Client connection
+
+	Client Side -
+		-Trying to checkout Project: TESTCASE.
+		Error: The project already exists locally.
+
+--> Test-Case 9-b:  //Checkout command when project is not present in Client.
+-INPUT :- 
+	Client Side -
+		- ./WTF checkout TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: checkout
+		Writing File .manifest in project: TESTCASE to client.
+		Writing File file1.txt in project: TESTCASE to client.
+		Writing File file2.txt in project: TESTCASE to client.
+		Writing File file3.txt in project: TESTCASE to client.
+		Terminating Client connection
+
+Client Side -
+	-Trying to checkout Project: TESTCASE.
+	Done.
+
+--> Test-Case 10:  //Getting required version of project back from server.
+-INPUT :- 
+	Client Side -
+		- ./WTF rollback TESTCASE 2
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: rollback
+		Server rollback requested for version 2
+		Terminating Client connection
+
+	Client Side -
+		-Trying to get rollback of Project: TESTCASE.
+		Rollback successful
+		Done.
+
+--> Test-Case 11:  //Removing file named 'file1.txt' from project. Similarly remove file2.txt and file3.txt.
+-INPUT :- 
+	Client Side -
+		- ./WTF remove TESTCASE file1.txt
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Terminating Client connection
+
+	Client Side -
+		-File removed from manifest.
+
+--> Test-Case 12:  //getting current version of project.
+-INPUT :- 
+	Client Side -
+		- ./WTF currentversion TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: currentversion
+		Terminating Client connection
+
+	Client Side -
+		Trying to get current version of Project: TESTCASE.
+		Project: TESTCASE
+		Project Version: 2
+		Project Files:
+			Version: 1, File: file1.txt
+		Done.
+
+--> Test-Case 13:  //updating project
+-INPUT :- 
+	Client Side -
+		- ./WTF update TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: update
+		Writing File .manifest in project: TESTCASE to client.
+		Terminating Client connection
+
+	Client Side -
+		Trying to create .update files: TESTCASE
+		Comparing manifests.
+		A file1.txt
+		Done.
+
+--> Test-Case 14:  //Destroying the whole project repository.
+-INPUT :- 
+	Client Side -
+		- ./WTF destroy TESTCASE
+
+-OUTPUT :-
+	Server Side:
+		-After accepting:
+		Starting Client Thread
+		Client issued command: destroy
+		Terminating Client connection
+
+
+	Client Side -
+		-Trying to destroy Project: TESTCASE.
+		Project destroyed successfully
+		Done.
+
+--> Test-Case 15:  //Telling user to EXIT by pressing (SIGINT).
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Manifest file is a metadata file listing all paths to all files in a project, their state (version) and a hash of the all the contents of each file.
+
+Below is the .manifest file stage wise.
+
+- ".manifest" initially is blank.
+
+- ".manifest" initially when a project named TESTCASE is created :-
+	
+	Client Side :-
+		-TESTCASE
+		1
+		0
+		
+	Server Side :-
+		-TESTCASE
+		1
+		0
+
+- ".manifest" when a file named file1.txt is added :-
+
+	Client Side :-
+		-TESTCASE
+		1
+		1
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+	
+	Server Side :-
+		-TESTCASE
+		1
+		0
+
+- ".manifest" when a file named file1.txt is pushed to the server :-
+
+	Client Side :-
+		-TESTCASE
+		1
+		1
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+	
+	Server Side :-
+		-TESTCASE
+		1
+		1
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+
+- ".manifest" after files named file2.txt and file3.txt is added to client as per the testcases above :-
+
+//The project is at version 3 with 3 files added.
+
+	Client Side :-
+		TESTCASE
+		3
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+	
+	Server Side :-
+		-TESTCASE
+		1
+		1
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+
+- ".manifest" after files named file2.txt and file3.txt is pushed to server as per the testcases above :-
+
+//The project is at version 3 with 3 files added to client and now pushed to the server.
+
+	Client Side :-
+		TESTCASE
+		3
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+	
+	Server Side :-
+		TESTCASE
+		3
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+
+- ".manifest" after the file named "file3.txt" is removed from the client side.
+
+	Client Side :-
+		TESTCASE
+		4
+		2
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+	
+	Server Side :-
+		TESTCASE
+		4
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+
+- ".manifest" after the file named "file3.txt" is removed from the client side and then committed to server.
+
+	Client Side :-
+		TESTCASE
+		4
+		2
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+	
+	Server Side :-
+		TESTCASE
+		4
+		2
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+
+- ".manifest" after whole project is removed from client side.
+
+	Client Side :-
+		//blank
+	
+	Server Side :-
+		TESTCASE
+		4
+		2
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+
+- ".manifest" when checkout is run.
+
+	Client Side :-
+		TESTCASE
+		4
+		2
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+	
+	Server Side :-
+		TESTCASE
+		4
+		2
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+
+- ".manifest" when project is at version 2 on client side and version 4 on server side.
+
+	Client Side :-
+		TESTCASE
+		2
+		2
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+	
+	Server Side :-
+		TESTCASE
+		4
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+
+- ".manifest" when rollback is run with version 4.
+
+// It requests 4th version from server to be added to client.
+
+	Client Side :-
+		TESTCASE
+		4
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+	
+	Server Side :-
+		TESTCASE
+		4
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+
+- ".manifest" when destroy is run for project named TESTCASE.
+	Client Side :-
+		TESTCASE
+		4
+		3
+		3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+		99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+		f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+	
+	Server Side :-
+		// No .manifest exist for this project on server side after destroy.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+--> Below are the output of all the hidden files that we create on both server and client side.
+
+The outputs are after the project named TESTCASE is created and 3 files named "file1.txt", "file2.txt" and "file3.txt" are added to it and whole repository is pushed to the server with no commits.
+
+- ".configure" file on client side :-
+	128.6.13.171 17000.
+	or
+	ls.cs.rutgers.edu 17000.
+
+- ".commit" file on client side in TESTCASE directory.
+	//empty as no commits.
+
+- ".manifest" file on both the client side and the server side :-
+	TESTCASE
+	4
+	3
+	3b3f43463398ff134cd1eba31bdd8fe9 1 file1.txt
+	99398e86399f7bfc04b44ccdb4e709de 1 file2.txt
+	f4c1b1a8921a0f56fe05e8368237fc42 1 file3.txt
+
+- ".history" on server side.
+	Project created: TESTCASE
+
+	push
+	1
+	A 1 d6e26fae9c9a992110bf80f973361e01 abc.txt
+	
+	Project rolled back to version: 2
+
+	push
+	2
+	A 1 3b3f43463398ff134cd1eba31bdd8fe9 file1.txt
+	A 1 99398e86399f7bfc04b44ccdb4e709de file2.txt
+	A 1 f4c1b1a8921a0f56fe05e8368237fc42 file3.txt
+	D 1 d6e26fae9c9a992110bf80f973361e01 abc.txt
+
+- ".version" on server side.
+	4
+
+
+
+
+
+

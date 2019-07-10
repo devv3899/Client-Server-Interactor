@@ -1,0 +1,76 @@
+--> What is the purpose of the assignment?
+	
+	-To implement our own version of git which is a a popular current iteration of a series of version control systems. To build a server and a client to maintain all the necessary changes form server to client and vice versa.
+
+All the testcases written in testcases.txt are tested on the ilab machine named "ls.cs.rutgers.edu" with IP address = 128.6.13.171 and Port number = 17000.
+
+Below written is the description of our code and how we tested it to work.
+
+--> Test-Case 0:   //Activating the server and configuring it with client.
+
+			-For this case we set our code to take parameters as required as for the server side it needs a port number and on the client side it needs IP address of the system on which the system is running along with the original port number the server is listening to. So if the parameter are not as required then our code will ask to enter params properly and for the incorrect parameters or if the server is not working it will throw a statement like client is unable to connect.
+
+--> Test-Case 1:  //creating a project named TESTCASE.
+
+			-For this create case we first check for the server to be active and the client to be configured with the server. Then we take the parameter as required by the format. So if the params are missing then we throw an error. If the params are correct then we create a directory of the named as asked by the user. That directory is created locally on the client side.
+
+--> Test-Case 2:  //Adding the file named 'file1.txt' to the project TESTCASE. Similarly add file2.txt and file3.txt.
+
+			-For this add command we made that it will fail if the project does not exist on the client. The client will add an entry for each file to its own .Manifest with a new version number and unique hashcode. We also made sure for the params to be correct or otherwise throw an error.
+
+--> Test-Case 3:  //Committing the project.
+
+			-For commit command we checked if the project name exists on the server, if the server can be contacted or not, if the client can fetch the server's .Manifest file for the project or if the client has a .Update file that isn't empty and all. If anyone of them was missing then the .commit fill fail to throw error. Then we take the parameter as required by the format. So if the params are missing then we throw an error. We also check for all the cases mentioned in the pdf and make it work according to the rules. If all the differences are only the cases, the client should send its .Commit to the server (and the server should save it as an active commit) and report success. If however there are any files in the server's .Manifest that have a different hashcode than the client's whose version number are not lower than the client's, then the commit fails with a message that the client must synchronize with the repository before committing changes. If the client's commit fails, it will delete its own .Commit.
+
+--> Test-Case 4:  //Pushing the project to the server.
+
+			-For our push command if the project name doesn’t exist on the server, if the client can not communicate with the server or if the client has a .Update consisting of any files that were modified since the last upgrade (i.e., any “M” codes). The client should send its .Commit and all files listed in it to the server. If there is a failure at any point in this process, the server will delete any new files or directories created, unlock the repository and send a failure message to the client. The client will erase its .Commit on either response from the server. We also check the parameters as required by the format. So if the params are missing then we throw an error.
+
+--> Test-Case 5:  //Getting current version of project from .version
+
+			-For currentversion command our code will request the server to give the current state of a project from the server. This command does not require that the client has a copy of the project locally. The client will output a list of all files under the project name, along with their version number as per the updates. We also check the parameters as required by the format. So if the params are missing then we throw an error.
+
+--> Test-Case 6:  //Getting all history of project from .history.
+
+			-For the history command we  fail it if the project doesn’t exist on the server or if the client can not communicate with it. We also check the parameters as required by the format. So if the params are missing then we throw an error. This command does not require that the client has a copy of the project locally. The server will send over a file containing the history of all operations performed on all successful pushes since the project's creation. The output will be similar to the update output, but with a version number and newline separating each push's log of changes.
+
+--> Test-Case 7:  //Check to see if project needs to be updated.
+
+			-For the update command our code will fail if the project name doesn’t exist on the server and if the client can not contact the server. The client will request the server's current .Manifest for a given project name. When the client receives it, the client will scan through all the local files in its project, generate a hash for every file in its own .Manifest and compare it with the server's. We also check the parameters as required by the format. So if the params are missing then we throw an error. We also make sure that the client does not generate a hash for, or record any information for, files in the project directory that are not in the .Manifest file. And also make sure that if no files need to be altered, the client should write a blank .Update and inform the user that the local project is up to date.
+
+--> Test-Case 8: //Check to see if project needs to be updated and if yes then upgrades it.
+
+			-For the upgrade command our code will fail if the project name doesn’t exist on the server, if the server can not be contacted or if there is no .Update on the client side. The client will apply the changes listed in the .Update to the client's local copy of the project. We also check the parameters as required by the format. So if the params are missing then we throw an error. We also see if the .Update is empty, the client need only inform the user that the project is up to date and delete the empty .Update file. If no .Update file exists, the client will contact the user to first wait an update the project.
+
+--> Test-Case 9-a:  //Checkout command when project is already present in Client.
+
+			-For the checkout command our code will fail if the project name doesn’t exist on the server, the client can't communicate with the server, if the project name already exists on the client side or if configure was not run on the client side. If it runs then it will request the entire project from the server, which will send over the current version of the project .Manifest as well as all the files that are listed in it. For checking purpose we deleted all the added and pushed files and then ran checkout and we got them all back as they were before. We also check the parameters as required by the format. So if the params are missing then we throw an error.
+
+
+--> Test-Case 9-b:  //Checkout command when project is not present in Client.
+
+			-For the checkout command our code will fail if the project name doesn’t exist on the server, the client can't communicate with the server, if the project name already exists on the client side or if configure was not run on the client side. If it runs then it will request the entire project from the server, which will send over the current version of the project .Manifest as well as all the files that are listed in it. For checking purpose we deleted all the added and pushed files and then ran checkout and we got them all back as they were before. We also check the parameters as required by the format. So if the params are missing then we throw an error.
+
+--> Test-Case 10:  //Getting required version of project back from server.
+
+			- For the rollback command our code will fail if the project name doesn’t exist on the server, the client can't communicate with it, or the version number given is invalid. We also check the parameters as required by the format. So if the params are missing then we throw an error. This command does not require that the client has a copy of the project locally. The server automatically reverts its current version of the project back to the version number requested by the client by deleting all more recent versions saved on the server side.
+
+--> Test-Case 11:  //Removing file named 'file1.txt' from project. Similarly remove file2.txt and file3.txt.
+
+			-For the remove command our code will fail if the project does not exist on the client. The client will remove the entry for the given file from its own .Manifest. We also check the parameters as required by the format. So if the params are missing then we throw an error.
+
+--> Test-Case 12:  //getting current version of project.
+
+			-For getting current version of project we make sure that .version file is present on server side. We also check the parameters as required by the format. So if the params are missing then we throw an error. If everything is fine then server will send current version and all its details to client and client will display it.
+
+--> Test-Case 13:  //updating project
+
+			-For updating we make sure that .manifest on both sides are equal and if they are different the we make them equal after commit and push. By running update changes are made only on client side which are then pushed to server in future. We also check the parameters as required by the format. So if the params are missing then we throw an error.
+
+--> Test-Case 14:  //Destroying the whole project repository.
+
+			-For the destroy command our code fail if the project name doesn’t exist on the server or the client can not communicate with it. Mainly we check the parameters as required by the format. So if the params are missing then we throw an error. On getting a destroy command the server will fully lock the repository, expires any pending commits, deletes all files and subdirectories under the project and sends back a success message. Basically it will delete all the files and directories related to specific project.
+
+--> Test-Case 15:  //Telling user to EXIT.
+
+			- For exiting press (control + C)
